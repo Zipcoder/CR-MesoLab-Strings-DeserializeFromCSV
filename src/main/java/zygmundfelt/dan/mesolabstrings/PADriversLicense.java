@@ -1,5 +1,6 @@
 package zygmundfelt.dan.mesolabstrings;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,18 +42,27 @@ public class PADriversLicense {
         this.licenseClass = licenseClass;
     }
 
+    public static String fileToString(File file) throws IOException {
+        FileReader fReader = new FileReader(file);
+        BufferedReader bReader = new BufferedReader(fReader);
+        String output = "";
+        for (String line; (line = bReader.readLine()) != null; output += line + "\n");
+        return output;
+    }
+
     //TODO - check input to ensure valid header
-    public static List<PADriversLicense> deserialize(String input) {
-        String[] arr = input.split(",");
+    public static List<PADriversLicense> deserializeFromCSV(String string) {
         List<PADriversLicense> list = new ArrayList<PADriversLicense>();
-        for(int i = 1; i < arr.length / 16; i++) {
-            list.add(new PADriversLicense(arr[i*16],arr[i*16 + 1],arr[i*16 + 2],arr[i*16+3],arr[i*16+4],arr[i*16+5],arr[i*16 + 6],arr[i*16 + 7],arr[i*16 + 8],arr[i*16 + 9],arr[i*16 + 10],arr[i*16 + 11],arr[i*16 + 12],arr[i*16 + 13],arr[i*16 + 14],arr[i*16 + 15]));
+        String[] lineBreaks = string.split("\n");
+        for(int i = 1; i < lineBreaks.length; i++) {
+            String[] arr = lineBreaks[i].split(",");
+            list.add(new PADriversLicense(arr[0],arr[1],arr[2],arr[3],arr[4],arr[5],arr[6],arr[7],arr[8],arr[9],arr[10],arr[11],arr[12],arr[13],arr[14],arr[15]));
         }
         return list;
     }
 
     public static String getCSVHeader() {
-        return "licenseNumber,lastName,firstName,middleName,address,city,state,zipCode,dateOfBirth,issued,expires,sex,eyes,height,organDonor,licenseClass,";
+        return "licenseNumber,lastName,firstName,middleName,address,city,state,zipCode,dateOfBirth,issued,expires,sex,eyes,height,organDonor,licenseClass\n";
     }
 
     public static String serializeToCSV(List<PADriversLicense> list) {
@@ -60,9 +70,7 @@ public class PADriversLicense {
         sb.append(getCSVHeader());
         for(PADriversLicense license : list) {
             sb.append(license.toStringForCSV());
-            sb.append(",");
         }
-        sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
     }
 
@@ -82,7 +90,7 @@ public class PADriversLicense {
                 + eyes + ","
                 + height + ","
                 + organDonor + ","
-                + licenseClass;
+                + licenseClass + "\n";
     }
 
 }
