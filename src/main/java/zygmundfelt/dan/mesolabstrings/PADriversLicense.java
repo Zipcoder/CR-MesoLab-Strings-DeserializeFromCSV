@@ -63,7 +63,10 @@ public class PADriversLicense {
         licenseNumber = arr[15];
     }
 
-    public static String CSVToString(File file) throws IOException {
+    /*
+    Can be used for CSV or JSON.
+     */
+    public static String fileToString(File file) throws IOException {
         FileReader fReader = new FileReader(file);
         BufferedReader bReader = new BufferedReader(fReader);
         String output = "";
@@ -118,27 +121,28 @@ public class PADriversLicense {
     Split into individual records.
      */
     private static List<String> splitToIndividualRecords(String string) {
-        List<String> list = new ArrayList<String>();
         Pattern pattern = Pattern.compile("\\{(\\s)+(\"[a-zA-Z0-9]+\": (\"([a-zA-Z0-9/' ]+)\"|\"\"),?\\s+)+}");
         Matcher m = pattern.matcher(string);
         ArrayList<String> matches = new ArrayList<String>();
         while(m.find()) {
             matches.add(m.group());
         }
-        for(String s : matches) System.out.println(s);
-        return list;
+        //for(String s : matches) System.out.println(s);
+        return matches;
     }
 
     /*
     Put every field of an individual record into an array.
      */
-    private static String[] individualRecordToArray(String string) {
-        Pattern pattern = Pattern.compile(": (\"([a-zA-Z0-9/' ]+)\"|\"\")");
+    public static String[] individualRecordToArray(String string) {
+        Pattern pattern = Pattern.compile("\"([a-zA-Z0-9/' ]*)\"");
         Matcher m = pattern.matcher(string);
         String[] individualRecord = new String[16];
         int i = 0;
         while(m.find()) {
-            individualRecord[i++] = m.group().substring(3);
+            m.find();
+            individualRecord[i] = m.group().replaceAll("\"","");
+            i++;
         }
         return individualRecord;
     }
@@ -152,6 +156,32 @@ public class PADriversLicense {
             list.add(new PADriversLicense(fieldArray));
         }
         return list;
+    }
+
+    public static String serializeToJSON(List<PADriversLicense> list) {
+
+        return null;
+    }
+
+    public static String toStringForJSON(PADriversLicense license) {
+        return "{\n" +
+                "    \"licenseNumber\": \"" + license.licenseNumber + "\",\n" +
+                "    \"lastName\": \"" + license.lastName + "\",\n" +
+                "    \"firstName\": \"" + license.firstName + "\",\n" +
+                "    \"middleName\": \"" + license.middleName + "\",\n" +
+                "    \"address\": \"" + license.address + "\",\n" +
+                "    \"city\": \"" + license.city + "\",\n" +
+                "    \"state\": \"" + license.state + "\",\n" +
+                "    \"zipCode\": \"" + license.zipCode + "\",\n" +
+                "    \"dateOfBirth\": \"" + license.dateOfBirth + "\",\n" +
+                "    \"issued\": \"" + license.issued + "\",\n" +
+                "    \"expires\": \"" + license.expires + "\",\n" +
+                "    \"sex\": \"" + license.sex + "\",\n" +
+                "    \"eyes\": \"" + license.eyes + "\",\n" +
+                "    \"height\": \"" + license.height + "\",\n" +
+                "    \"organDonor\": \"" + license.organDonor + "\",\n" +
+                "    \"licenseClass\": \"" + license.licenseClass + "\"\n" +
+                "  }";
     }
 
     public static void main(String[] args) {

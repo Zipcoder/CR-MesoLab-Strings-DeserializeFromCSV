@@ -35,7 +35,7 @@ public class TestPADriversLicense {
     }
 
     @Test
-    public void deserializeTest() {
+    public void deserializeFromCSVTest() {
         String string = "licenseNumber,lastName,firstName,middleName,address,city,state,zipCode,dateOfBirth,issued,expires,sex,eyes,height,organDonor,licenseClass\n" +
                 "L098886498494,Lomax,Kevin,,9234 High St,Wilmington,MI,11111,9/3/1940,8/8/2008,8/8/2018,M,BRO,6'0'',YES,D\n" +
                 "L234234598495,Wick,John,Dogshead,2190 Badass Alley,Brooklyn,NY ,12321,6/6/1977,3/3/2000,1/1/2010,M,GRN,6'0'',YES,D\n" +
@@ -49,6 +49,35 @@ public class TestPADriversLicense {
         int actual = list.size();
 
         Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void individualRecordToArrayForJSONTest() {
+        String string = "{\n" +
+                "    \"licenseNumber\": \"L234252352391\",\n" +
+                "    \"lastName\": \"Reeves\",\n" +
+                "    \"firstName\": \"Keanu\",\n" +
+                "    \"middleName\": \"\",\n" +
+                "    \"address\": \"876 Zion Dr\",\n" +
+                "    \"city\": \"White Plains\",\n" +
+                "    \"state\": \"NY\",\n" +
+                "    \"zipCode\": \"44444\",\n" +
+                "    \"dateOfBirth\": \"6/6/1955\",\n" +
+                "    \"issued\": \"6/9/2005\",\n" +
+                "    \"expires\": \"6/9/2010\",\n" +
+                "    \"sex\": \"M\",\n" +
+                "    \"eyes\": \"GRN\",\n" +
+                "    \"height\": \"5'11\",\n" +
+                "    \"organDonor\": \"YES\",\n" +
+                "    \"licenseClass\": \"D\"\n" +
+                "  }";
+        String[] expected = {"L234252352391","Reeves","Keanu","","876 Zion Dr","White Plains","NY","44444","6/6/1955","6/9/2005","6/9/2010","M","GRN","5'11","YES","D"};
+
+        String[] actual = PADriversLicense.individualRecordToArray(string);
+
+        for(int i = 0; i < 16; i++) {
+            Assert.assertEquals(expected[i], actual[i]);
+        }
     }
 
 }
