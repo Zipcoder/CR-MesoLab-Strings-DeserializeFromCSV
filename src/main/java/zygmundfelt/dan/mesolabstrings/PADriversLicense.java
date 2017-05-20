@@ -60,7 +60,7 @@ public class PADriversLicense {
         eyes = arr[12];
         height = arr[13];
         organDonor = arr[14];
-        licenseNumber = arr[15];
+        licenseClass = arr[15];
     }
 
     /*
@@ -159,12 +159,18 @@ public class PADriversLicense {
     }
 
     public static String serializeToJSON(List<PADriversLicense> list) {
-
-        return null;
+        StringBuilder sb = new StringBuilder();
+        sb.append("[\n");
+        for(PADriversLicense license : list) {
+            sb.append(toStringForJSON(license));
+        }
+        sb.replace(sb.length() - 2, sb.length(),"");
+        sb.append("\n]");
+        return sb.toString();
     }
 
     public static String toStringForJSON(PADriversLicense license) {
-        return "{\n" +
+        return "  {\n" +
                 "    \"licenseNumber\": \"" + license.licenseNumber + "\",\n" +
                 "    \"lastName\": \"" + license.lastName + "\",\n" +
                 "    \"firstName\": \"" + license.firstName + "\",\n" +
@@ -181,100 +187,21 @@ public class PADriversLicense {
                 "    \"height\": \"" + license.height + "\",\n" +
                 "    \"organDonor\": \"" + license.organDonor + "\",\n" +
                 "    \"licenseClass\": \"" + license.licenseClass + "\"\n" +
-                "  }";
+                "  },\n";
+    }
+
+    public static List<PADriversLicense> deserialize(String fileText, String desiredFormat) throws FormatNotAcceptedException {
+        if(desiredFormat.equalsIgnoreCase("CSV")) {
+            return deserializeFromCSV(fileText);
+        } else if(desiredFormat.equalsIgnoreCase("JSON")) {
+            return deserializeFromJSON(fileText);
+        } else {
+            throw new FormatNotAcceptedException();
+        }
     }
 
     public static void main(String[] args) {
-        deserializeFromJSON("{\n" +
-                "    \"licenseNumber\": \"L364856498487\",\n" +
-                "    \"lastName\": \"Long\",\n" +
-                "    \"firstName\": \"Aaron\",\n" +
-                "    \"middleName\": \"C\",\n" +
-                "    \"address\": \"456 Street Dr\",\n" +
-                "    \"city\": \"Wilmington\",\n" +
-                "    \"state\": \"NJ\",\n" +
-                "    \"zipCode\": \"12345\",\n" +
-                "    \"dateOfBirth\": \"06/17/1993\",\n" +
-                "    \"issued\": \"06/17/2014\",\n" +
-                "    \"expires\": \"06/30/2018\",\n" +
-                "    \"sex\": \"M\",\n" +
-                "    \"eyes\": \"GRN\",\n" +
-                "    \"height\": \"6'2\",\n" +
-                "    \"organDonor\": \"YES\",\n" +
-                "    \"licenseClass\": \"D\"\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"licenseNumber\": \"L364856423452\",\n" +
-                "    \"lastName\": \"Kim\",\n" +
-                "    \"firstName\": \"Chris\",\n" +
-                "    \"middleName\": \"\",\n" +
-                "    \"address\": \"820 District Dr\",\n" +
-                "    \"city\": \"Wilmington\",\n" +
-                "    \"state\": \"DE\",\n" +
-                "    \"zipCode\": \"54321\",\n" +
-                "    \"dateOfBirth\": \"12/11/1980\",\n" +
-                "    \"issued\": \"08/12/2013\",\n" +
-                "    \"expires\": \"12/11/2018\",\n" +
-                "    \"sex\": \"M\",\n" +
-                "    \"eyes\": \"BRO\",\n" +
-                "    \"height\": \"6'5\",\n" +
-                "    \"organDonor\": \"NO\",\n" +
-                "    \"licenseClass\": \"D\"\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"licenseNumber\": \"L363345398489\",\n" +
-                "    \"lastName\": \"Stamatelos\",\n" +
-                "    \"firstName\": \"Jarryd\",\n" +
-                "    \"middleName\": \"\",\n" +
-                "    \"address\": \"123 Main St\",\n" +
-                "    \"city\": \"Wilmington\",\n" +
-                "    \"state\": \"NJ\",\n" +
-                "    \"zipCode\": \"21334\",\n" +
-                "    \"dateOfBirth\": \"3/17/1988\",\n" +
-                "    \"issued\": \"3/17/2016\",\n" +
-                "    \"expires\": \"3/20/2020\",\n" +
-                "    \"sex\": \"M\",\n" +
-                "    \"eyes\": \"BRO\",\n" +
-                "    \"height\": \"7'0''\",\n" +
-                "    \"organDonor\": \"YES\",\n" +
-                "    \"licenseClass\": \"D\"\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"licenseNumber\": \"L809239899490\",\n" +
-                "    \"lastName\": \"Cage\",\n" +
-                "    \"firstName\": \"Nick\",\n" +
-                "    \"middleName\": \"Treasure\",\n" +
-                "    \"address\": \"362 Fancy St\",\n" +
-                "    \"city\": \"Los Angeles\",\n" +
-                "    \"state\": \"CA\",\n" +
-                "    \"zipCode\": \"55555\",\n" +
-                "    \"dateOfBirth\": \"02/02/1970\",\n" +
-                "    \"issued\": \"02/02/2000\",\n" +
-                "    \"expires\": \"02/02/2006\",\n" +
-                "    \"sex\": \"M\",\n" +
-                "    \"eyes\": \"BRO\",\n" +
-                "    \"height\": \"6'0''\",\n" +
-                "    \"organDonor\": \"YES\",\n" +
-                "    \"licenseClass\": \"D\"\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"licenseNumber\": \"L234252352391\",\n" +
-                "    \"lastName\": \"Reeves\",\n" +
-                "    \"firstName\": \"Keanu\",\n" +
-                "    \"middleName\": \"\",\n" +
-                "    \"address\": \"876 Zion Dr\",\n" +
-                "    \"city\": \"White Plains\",\n" +
-                "    \"state\": \"NY\",\n" +
-                "    \"zipCode\": \"44444\",\n" +
-                "    \"dateOfBirth\": \"6/6/1955\",\n" +
-                "    \"issued\": \"6/9/2005\",\n" +
-                "    \"expires\": \"6/9/2010\",\n" +
-                "    \"sex\": \"M\",\n" +
-                "    \"eyes\": \"GRN\",\n" +
-                "    \"height\": \"5'11\",\n" +
-                "    \"organDonor\": \"YES\",\n" +
-                "    \"licenseClass\": \"D\"\n" +
-                "  }");
+
     }
 
 }
