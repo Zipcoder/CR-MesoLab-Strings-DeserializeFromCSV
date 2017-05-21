@@ -13,9 +13,10 @@ import java.util.List;
  */
 public class DriversLicenseTest {
 
+
     private static DateFormat df =  new SimpleDateFormat("MM/dd/yyyy");
     @Test
-    public void serializeToCSV() throws Exception {
+    public void serializeToCSVTest() throws Exception {
         //given (we create an instance of the DriversLicense class with all the fields,and this method is supposed
         //to return all the fields in VSV format.
 
@@ -43,7 +44,7 @@ public class DriversLicenseTest {
     }
 
     @Test
-    public void getCSVHeader() throws Exception {
+    public void getCSVHeaderTest() throws Exception {
         //given(as this is a Static method, we are creating a new instance of the main class)
 
         //when
@@ -54,7 +55,7 @@ public class DriversLicenseTest {
     }
 
     @Test
-    public void deserializeFromCSV() throws Exception {
+    public void deserializeFromCSVTest() throws Exception {
         //given
         DriversLicense driversLicense = new DriversLicense();
         //when
@@ -88,4 +89,65 @@ public class DriversLicenseTest {
 
     }
 
+    @Test
+    public void serializeToJSONTest() throws Exception {
+        //given (we create an instance of the DriversLicense class with all the fields,and this method is supposed
+        //to return all the fields in VSV format.
+
+        DriversLicense dl = new DriversLicense();
+
+        dl.setLastName("Reeves");
+        dl.setFirstName("Keanu");
+        dl.setAddress("876 Zion Dr");
+        dl.setState("NY");
+        dl.setLicenseNumber("L234252352391");
+        dl.setDateOfBirth("6/6/1955");
+        dl.setDateOfIssue("6/9/2005");
+        dl.setDateOfExpiry("6/9/2010");
+        dl.setGender("M");
+        dl.setEyeColor("GRN");
+        dl.setHeight("5'11\"");
+        dl.setOrganDonor("YES");
+        dl.setLicenseClass("D");
+
+        //when
+        String expected= "{\"lastName\":\"Reeves\",\"firstName\":\"Keanu\",\"address\":\"876 Zion Dr\",\"state\":\"NY\",\"licenseNumber\":\"L234252352391\",\"dateOfBirth\":\"6/6/1955\",\"dateOfIssue\":\"6/9/2005\",\"dateOfExpiry\":\"6/9/2010\",\"gender\":\"M\",\"eyeColor\":\"GRN\",\"height\":\"5'11\",\"organDonor\":\"YES\",\"licenseClass\":\"D\"}";
+
+        //then
+        Assert.assertEquals("Both strings are matching ",expected,dl.serializeToJSON());
+    }
+
+    @Test
+    public void deserializeFromJSONTest() throws Exception {
+        //given
+        DriversLicense driversLicense = new DriversLicense();
+
+        //when
+
+        String actualJson= "[{\"lastName\":\"Reeves\",\"firstName\":\"Keanu\",\"address\":\"876 Zion Dr\",\"state\":\"NY\",\"licenseNumber\":\"L234252352391\",\"dateOfBirth\":\"6/6/1955\",\"dateOfIssue\":\"6/9/2005\",\"dateOfExpiry\":\"6/9/2010\",\"gender\":\"M\",\"eyeColor\":\"GRN\",\"height\":\"5'11\",\"organDonor\":\"YES\",\"licenseClass\":\"D\"}]";
+
+        List<DriversLicense> driversLicensesList= driversLicense.deserializeFromJSON(actualJson);
+
+
+
+        //then
+        Assert.assertNotNull(driversLicensesList);
+        Assert.assertEquals(1,driversLicensesList.size());
+
+        DriversLicense dl1 = driversLicensesList.get(0);
+        Assert.assertEquals("Reeves", dl1.getLastName());
+        Assert.assertEquals("Keanu", dl1.getFirstName());
+        Assert.assertEquals("876 Zion Dr", dl1.getAddress());
+        Assert.assertEquals("NY", dl1.getState());
+        Assert.assertEquals("L234252352391", dl1.getLicenseNumber());
+        Assert.assertEquals("6/6/1955", dl1.getDateOfBirth());
+        Assert.assertEquals("6/9/2005", dl1.getDateOfIssue());
+        Assert.assertEquals("6/9/2010", dl1.getDateOfExpiry());
+        Assert.assertEquals("M", dl1.getGender());
+        Assert.assertEquals("GRN", dl1.getEyeColor());
+        Assert.assertEquals("5'11", dl1.getHeight());
+        Assert.assertEquals("YES", dl1.getOrganDonor());
+        Assert.assertEquals("D", dl1.getLicenseClass());
+    }
 }
+

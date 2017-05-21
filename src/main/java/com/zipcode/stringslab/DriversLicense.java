@@ -1,6 +1,10 @@
 package com.zipcode.stringslab;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -188,13 +192,13 @@ public class DriversLicense {
         List<DriversLicense> returnList = new ArrayList<>();
         try {
             String line = bufferedReader.readLine();
-            boolean  isHeader = true;
+            boolean isHeader = true;
 
 
             while (line != null) {
 
-                if (isHeader){
-                    isHeader=false;
+                if (isHeader) {
+                    isHeader = false;
                     line = bufferedReader.readLine();
                     continue;
                 }
@@ -227,6 +231,37 @@ public class DriversLicense {
             System.out.println("Error occurred while processing the CSV file");
         }
         return returnList;
+
+    }
+    /*
+    *
+Part 2: Add methods for serializing to and deserializing from JSON. Once you have these methods, add new serialize
+  and deserialize methods that take an additional string listing the desired format (CSV or JSON) and produce
+   the desired result by delegating to the existing serialization and deserialization methods. These methods
+   should throw an appropriate exception if an unsupported format is requested. */
+
+    public String serializeToJSON() {
+        String jsonValue = null;
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            jsonValue = objectMapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return jsonValue;
+    }
+
+    public static List<DriversLicense> deserializeFromJSON(String licenseDataJsonString) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<DriversLicense> listCar = null;
+        try {
+            listCar = objectMapper.readValue(licenseDataJsonString, new TypeReference<List<DriversLicense>>() {
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return listCar;
 
     }
 
