@@ -200,8 +200,4 @@ public class PADriversLicense {
         }
     }
 
-    public static void main(String[] args) {
-
-    }
-
 }
